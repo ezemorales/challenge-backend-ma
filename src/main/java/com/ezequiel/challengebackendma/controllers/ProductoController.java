@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controladora del CRUD de productos
+ */
 @RestController
 @RequestMapping("/productos")
 public class ProductoController {
@@ -27,12 +30,21 @@ public class ProductoController {
   @Autowired
   private ProductoService productoService;
 
+  /**
+   * Listar productos
+   * @return Lista de productos
+   */
   @ApiOperation(value = "Listar todos los productos")
   @GetMapping(produces = "application/json")
   public ResponseEntity<List<Producto>> getAll() {
     return ResponseEntity.ok(productoService.findAll());
   }
 
+  /**
+   * Consultar un producto por UUID
+   * @param uuid UUID del producto
+   * @return Producto buscado o NotFoundException en caso de no haberlo encontrado.
+   */
   @ApiOperation(value = "Consultar un producto por UUID")
   @GetMapping(value = "/{uuid}", produces = "application/json")
   public ResponseEntity<Producto> consultarProducto(
@@ -40,6 +52,11 @@ public class ProductoController {
     return ResponseEntity.ok(productoService.findByUUID(uuid));
   }
 
+  /**
+   * Alta de un producto
+   * @param productoRequest Request del producto a crear
+   * @return Retorna el producto creado, y en caso de que ya exista NotFoundException.
+   */
   @ApiOperation(value = "Crear producto")
   @PostMapping(produces = "application/json")
   public ResponseEntity<Producto> crearProducto(
@@ -48,6 +65,11 @@ public class ProductoController {
         .body(productoService.crearProducto(productoRequest));
   }
 
+  /**
+   * Elimina un producto
+   * @param uuid UUID del producto a eliminar.
+   * Devuelve una NotFoundException en caso de no encontrar el producto a eliminar.
+   */
   @ApiOperation(value = "Eliminar producto")
   @RequestMapping(path = "/{uuid}", method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -56,6 +78,11 @@ public class ProductoController {
     productoService.borrarProducto(uuid);
   }
 
+  /**
+   * Modifica un producto
+   * @param uuid UUID del producto a modificar.
+   * @param differences JSON con los campos a modificar.
+   */
   @ApiOperation(value = "Modificar producto")
   @PutMapping(value = "/{uuid}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
